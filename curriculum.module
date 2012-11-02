@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ *
+ * This module provides the curriculum of Gustavo Gómez Campo.
+ */
+/**
+ * Implements hook_help().
+ */
+function curriculum_help($path, $arg) {
+	if ($path == 'admin/help#curriculum') {
+		return t('Curriculum de Gustavo gómez Campo.');
+	};
+};
+
+/**
+* Implement hook_menu().
+*/
+function curriculum_menu() {
+
+// enlace del curriculum en el menu principal
+  $items['curriculum'] = array(
+    'title' => 'Curriculum de Gustavo',
+    'description' => 'Curriculum de Gustavo Gómez Campo',
+    'menu_name' => 'main-menu',
+	'page callback' => 'cv_css',
+	'access callback' => TRUE,
+	'weight' => '30',
+  );
+	$items['curriculum/html'] = array(
+		'title' => 'Curriculum modificado con CSS',
+		'type' => MENU_DEFAULT_LOCAL_TASK,
+		'weight' => '1',
+	);
+	$items['curriculum/pdf'] = array(
+		'type' => MENU_LOCAL_TASK,
+		'title' => 'Curriculum en pdf',
+		'page callback' => 'cv_pdf',
+		'access callback' => TRUE,
+		'weight' => '3',
+	);
+	$items['curriculum/jquery'] = array(
+		'type' => MENU_LOCAL_TASK,
+		'title' => 'Curriculum modificado con jQuery',
+		'page callback' => 'cv_jquery',
+		'access callback' => TRUE,
+		'weight' => '2',
+	);
+
+return $items;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * Defines the theming capabilities provided by this module.
+ */
+function curriculum_theme() {
+  return array(
+	'curriculum_css' => array(
+		'render element' => 'form',
+		'template' => 'curriculum_css',
+	),
+	'curriculum_acordeon' => array(
+		'template' => 'curriculum_acordeon',
+		'variables' => array('title' => NULL),
+    	),	
+  );
+}
+
+function cv_pdf (){
+	$markup = '<p>'.t('Pincha en el enlace de abajo para descargar el curriculum en pdf:').'</p><div><a href="https://docs.google.com/open?id=0B-oeTIYQgV9qVHM4Tk9odm90MEU" target="_blank">'.t('Curriculum en pdf.').'</a></div>';
+	return array('#markup' => $markup);
+}
+function cv_css (){
+  $title = NULL ;
+  $build['myelement'] = array(
+    '#theme' => 'curriculum_css',
+    '#title' => $title,
+    '#attached' => array(
+	'css' => array(drupal_get_path('module','curriculum').'/curriculum.css'),
+     ),
+  );
+	$output = drupal_render($build);
+  return $output;
+
+}
+function cv_jquery(){
+  $title = t('Pincha en las secciones para abrirlas o cerrarlas:');
+  $build['myelement'] = array(
+    '#theme' => 'curriculum_acordeon',
+    '#title' => $title,
+  );
+  $build['myelement']['#attached']['library'][] = array('system', 'ui.accordion');
+  $build['myelement']['#attached']['js'][] = array('data' => '(function($){$(function() { $("#accordion").accordion(); })})(jQuery);', 'type' => 'inline');
+  $output = drupal_render($build);
+  return $output;
+
+}
+

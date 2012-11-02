@@ -1,0 +1,6 @@
+name = CV de Gustavo Gómez Campo
+description = Pequeño modulo en el que se muestra el curriculum de Gustavo Gómez Campo realizado por Gustavo Gómez Campo.
+package = CV de Gustavo gómez
+core = 7.x
+
+files[] = curriculum.module
